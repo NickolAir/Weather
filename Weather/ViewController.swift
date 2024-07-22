@@ -14,6 +14,8 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
         UIColor(red: 0x51/255, green: 0x6E/255, blue: 0x9A/255, alpha: 1.0), // 516E9A
         UIColor(red: 0x96/255, green: 0x96/255, blue: 0x96/255, alpha: 1.0)  // 969696
     ]
+    
+    var isEnglish: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,7 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
         setupTitleLabel()
         setupCollectionView()
         setupCloudImageView()
+        setupLanguageSwitchButton()
         
         // Выбор случайного погодного явления при запуске
         let randomIndex = Int.random(in: 0..<weatherTypes.count)
@@ -44,7 +47,8 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     func setupTitleLabel() {
         let titleLabel = UILabel()
-        titleLabel.text = "Weather"
+        titleLabel.tag = 100
+        titleLabel.text = isEnglish ? "Weather" : "Погода"
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
@@ -92,14 +96,52 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
         ])
     }
 
+    func setupLanguageSwitchButton() {
+        let switchButton = UIButton(type: .system)
+        switchButton.setTitle(isEnglish ? "RU" : "EN", for: .normal)
+        switchButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        switchButton.backgroundColor = .clear
+        switchButton.setTitleColor(.systemBlue, for: .normal)
+        switchButton.layer.cornerRadius = 30
+        switchButton.layer.borderWidth = 2
+        switchButton.layer.borderColor = UIColor.systemBlue.cgColor
+        switchButton.alpha = 0.8
+        switchButton.addTarget(self, action: #selector(didTapSwitchLanguage), for: .touchUpInside)
+        
+        view.addSubview(switchButton)
+        
+        switchButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            switchButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            switchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            switchButton.widthAnchor.constraint(equalToConstant: 60),
+            switchButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
+    }
+    
+    @objc func didTapSwitchLanguage() {
+        isEnglish.toggle()
+        
+        if let titleLabel = view.viewWithTag(100) as? UILabel {
+            titleLabel.text = isEnglish ? "Weather" : "Погода"
+        }
+        
+        if let switchButton = view.subviews.first(where: { $0 is UIButton }) as? UIButton {
+            switchButton.setTitle(isEnglish ? "RU" : "EN", for: .normal)
+        }
+        
+        collectionView.reloadData()
+    }
+    
     func startCloudAnimation(imageName: String) {
         cloudImageView.image = UIImage(named: imageName)
         cloudImageView.alpha = 1
 
         cloudImageView.frame.origin.x = -cloudImageView.frame.width
-
+        
         let screenWidth = view.frame.width
         let cloudWidth = cloudImageView.frame.width
+        
         let distance = screenWidth + cloudWidth
 
         UIView.animate(withDuration: 10.0, delay: 0, options: [.curveLinear], animations: {
