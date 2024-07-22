@@ -91,6 +91,7 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
         cloudImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             cloudImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200),
+            cloudImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40),
             cloudImageView.widthAnchor.constraint(equalToConstant: 300),
             cloudImageView.heightAnchor.constraint(equalToConstant: 300)
         ])
@@ -151,7 +152,7 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
                 self.cloudImageView.alpha = 0
             }, completion: { _ in
                 self.cloudImageView.alpha = 1
-                self.cloudImageView.frame.origin.x = -self.cloudImageView.frame.width
+                self.cloudImageView.frame.origin.x = 0
             })
         }
     }
