@@ -152,7 +152,7 @@ class WeatherViewController: UIViewController, UICollectionViewDelegate, UIColle
                 self.cloudImageView.alpha = 0
             }, completion: { _ in
                 self.cloudImageView.alpha = 1
-                self.cloudImageView.frame.origin.x = 0
+                self.cloudImageView.frame.origin.x = screenWidth
             })
         }
     }
